@@ -1,4 +1,5 @@
 @echo off
 echo Build started
-echo This is a sample build
+echo Creating dummy app.jar
+echo Dummy Jar File > app.jar
 dir
