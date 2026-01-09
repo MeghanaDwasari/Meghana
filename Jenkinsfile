@@ -1,50 +1,37 @@
-
 pipeline {
     agent any
 
     tools {
-        jdk "jdk11"   // Configure this JDK in Jenkins Global Tool Configuration
+        jdk 'jdk11'   // Must match Jenkins Global Tool Configuration
     }
 
     stages {
-        stage("Checkout") {
+
+        stage('Build') {
             steps {
-                git branch: "main",
-                    url: "file:///C:/PATH/TO/pipeline-git-repo"
-                echo "Repository cloned successfully"
+                echo 'Building application...'
+                bat 'build.bat'
             }
         }
 
-        stage("Build") {
+        stage('Archive') {
             steps {
-                echo "Building application..."
-                bat "build.bat"
-            }
-        }
-
-        stage("Test") {
-            steps {
-                echo "Running tests..."
-                bat "java -cp src\\main\\java;src\\test\\java com.example.HelloDevOpsTest"
-            }
-        }
-
-        stage("Archive") {
-            steps {
-                echo "Archiving artifacts..."
-                archiveArtifacts artifacts: "app.jar", fingerprint: true
-                archiveArtifacts artifacts: "build.bat", fingerprint: true
+                echo 'Archiving artifacts...'
+                archiveArtifacts artifacts: 'app.jar', fingerprint: true
             }
         }
     }
 
     post {
         always {
-            echo "Pipeline completed"
+            echo 'Pipeline completed'
             cleanWs()
+        }
+        success {
+            echo 'BUILD SUCCESS'
+        }
+        failure {
+            echo 'BUILD FAILED'
         }
     }
 }
-
-
-
